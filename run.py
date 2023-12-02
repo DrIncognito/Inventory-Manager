@@ -1,64 +1,78 @@
 from rich.console import Console
 from rich.table import Table
-from inventory import add_item
-from inventory import remove_item
-from inventory import update_item
+from inventory import add_item, remove_item, update_item, view_inventory
 
+def display_inventory(console):
+    # Create a table
+    table = Table(show_header=True, header_style="bold magenta")
+    table.add_column("Item Name")
+    table.add_column("Quantity")
+    table.add_column("Value")
+    table.add_column("Total Value")
 
-def load_data():
-    # Implement your logic to load data here
-    # For example, you can return a list of tuples representing the data
-    return [("Item 1", 10, 5.99), ("Item 2", 5, 9.99), ("Item 3", 2, 14.99)]
+    # Load data and add to the table
+    data = view_inventory()
+    for row in data:
+        total_value = row[1] * row[2]
+        table.add_row(str(row[0]), str(row[1]), str(row[2]), str(total_value))
 
+    # Print the table to the console
+    console.print(table)
 
 def main():
     # Create a console object
     console = Console()
 
+    # Display the inventory by default
+    display_inventory(console)
+
     while True:
-        console.print("[1] Add item")
+        console.print("\n[1] Add item")
         console.print("[2] Remove item")
         console.print("[3] Update item")
         console.print("[4] View inventory")
         console.print("[5] Exit")
 
-        choice = input("Enter your choice: ")
+        choice = input("\nEnter your choice: ")
 
-        if choice == '1':
-            item_name = input("Enter item name: ")
-            quantity = int(input("Enter quantity: "))
-            price = float(input("Enter price: "))
+        try:
+            if choice == '1':
+                item_name = input("Enter item name: ")
+                quantity = int(input("Enter quantity: "))
+                value = float(input("Enter value: "))
 
-            add_item(item_name, quantity, price)
-        elif choice == '2':
-            item_name = input("Enter item name: ")
+                add_item(item_name, quantity, value)
+                console.print(f"Added {quantity} of {item_name} with value {value}")
+            elif choice == '2':
+                item_name = input("Enter item name: ")
 
-            remove_item(item_name)
-        elif choice == '3':
-            item_name = input("Enter item name: ")
-            quantity = int(input("Enter quantity: "))
-            price = float(input("Enter price: "))
+                remove_item(item_name)
+                console.print(f"Removed {item_name} from inventory")
+            elif choice == '3':
+                item_name = input("Enter item name: ")
+                quantity = int(input("Enter quantity: "))
+                value = float(input("Enter value: "))
 
-            update_item(item_name, quantity, price)
-        elif choice == '4':
-            # Create a table
-            table = Table(show_header=True, header_style="bold magenta")
+                update_item(item_name, quantity, value)
+                console.print(f"Updated {item_name} to {quantity} with value {value}")
+            elif choice == '4':
+                display_inventory(console)
+            elif choice == '5':
+                break
+            else:
+                console.print("Invalid choice. Please try again.")
+        except ValueError as e:
+            console.print(e)
+        except Exception as e:
+            console.print(f"An error occurred: {e}")
 
-            table.add_column("Item Name")
-            table.add_column("Quantity")
-            table.add_column("Price")
+        except ValueError:
+            console.print("Invalid input. Please enter the correct type of value.")
+        except Exception as e:
+            console.print(f"An error occurred: {e}")
 
-            # Load data and add to the table
-            data = load_data()
-            for row in data:
-                table.add_row(str(row[0]), str(row[1]), str(row[2]))
-
-            # Print the table to the console
-            console.print(table)
-        elif choice == '5':
-            break
-        else:
-            console.print("Invalid choice. Please try again.")
+        # Display the inventory after each choice
+        display_inventory(console)
 
 if __name__ == "__main__":
     main()
