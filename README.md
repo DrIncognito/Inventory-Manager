@@ -30,3 +30,9 @@ First, create an instance of the `Inventory` class:
 
 ```python
 inventory = Inventory()
+inventory.add_item("Apple", 100, 0.5)
+inventory.remove_item("Apple")
+inventory.update_item("Apple", 200, 0.75)
+items = inventory.view_inventory()
+inventory.audit_inventory()
+```
