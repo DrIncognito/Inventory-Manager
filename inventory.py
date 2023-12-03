@@ -12,14 +12,14 @@ cursor.execute('''
     CREATE TABLE IF NOT EXISTS inventory(
         item_name TEXT PRIMARY KEY,
         quantity INTEGER,
-        price REAL)
+        value REAL)
 ''')
 
 # Function to add an item to the inventory
-def add_item(item_name, quantity, price):
+def add_item(item_name, quantity, value):
     try:
-        query = "INSERT INTO inventory (item_name, quantity, price) VALUES (?, ?, ?)"
-        values = (item_name, quantity, price)
+        query = "INSERT INTO inventory (item_name, quantity, value) VALUES (?, ?, ?)"
+        values = (item_name, quantity, value)
         cursor.execute(query, values)
         db.commit()
     except sqlite3.IntegrityError:
@@ -37,10 +37,10 @@ def remove_item(item_name):
         print(f"An error occurred: {e}")
 
 # Function to update item details
-def update_item(item_name, quantity, price):
+def update_item(item_name, quantity, value):
     try:
-        query = "UPDATE inventory SET quantity = ?, price = ? WHERE item_name = ?"
-        values = (quantity, price, item_name)
+        query = "UPDATE inventory SET quantity = ?, value = ? WHERE item_name = ?"
+        values = (quantity, value, item_name)
         cursor.execute(query, values)
         db.commit()
     except Exception as e:
