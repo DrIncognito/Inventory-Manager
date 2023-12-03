@@ -4,15 +4,29 @@ from inventory import Inventory
 import os
 
 def display_inventory(console, inventory):
-    # Create a table
+    """
+    Displays the inventory in a table format.
+
+    Args:
+        console (Console): The console object for printing.
+        inventory (Inventory): The inventory object to display.
+
+    The function creates a table with columns for item name, quantity, value, and total value.
+    It then loads the data from the inventory and adds each item to the table.
+    Finally, it prints the table to the console.
+    """
+    # Create a table with headers for item name, quantity, value, and total value
     table = Table(show_header=True, header_style="bold magenta")
     table.add_column("Item Name")
     table.add_column("Quantity")
     table.add_column("Value")
     table.add_column("Total Value")
 
-    # Load data and add to the table
+    # Load data from the inventory
     data = inventory.view_inventory()
+
+    # For each item in the inventory, calculate the total value (quantity * value)
+    # and add a row to the table with the item name, quantity, value, and total value
     for row in data:
         total_value = row[1] * row[2]
         table.add_row(str(row[0]), str(row[1]), str(row[2]), str(total_value))
@@ -20,11 +34,12 @@ def display_inventory(console, inventory):
     # Print the table to the console
     console.print(table)
 
-
 def main():
+    """
+    Main function that runs the inventory manager program.
+    """
     def clear_screen():
         os.system('cls' if os.name == 'nt' else 'clear')
-
 
     # Create a console object
     console = Console()
@@ -72,7 +87,7 @@ def main():
 
                 if not inventory.item_exists(item_name):
                     console.print("Item does not exist in the inventory. Use the add option instead.")
-                    input("Press any key to continue...")
+                    input("Press enter to continue...")
                     continue
 
                 console.print("What would you like to update?")
