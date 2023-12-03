@@ -15,9 +15,9 @@ class Inventory:
         self.cursor = self.db.cursor()
         self.cursor.execute('''
             CREATE TABLE IF NOT EXISTS inventory(
-                item_name TEXT PRIMARY KEY,  # item_name is the primary key
-                quantity INTEGER,  # quantity is the number of items in stock
-                value REAL)  # value is the price of the item
+                item_name TEXT PRIMARY KEY,
+                quantity INTEGER,
+                value REAL)
         ''')
 
     def help(self):
@@ -50,6 +50,15 @@ class Inventory:
         """
         print(message)
 
+    def item_exists(self, item_name):
+        """
+        Checks if an item exists in the inventory.
+        Returns True if the item exists, False otherwise.
+        """
+        self.cursor.execute("SELECT * FROM inventory WHERE item_name = ?", (item_name,))
+        item = self.cursor.fetchone()
+        return item is not None
+
     def add_item(self, item_name, quantity, value):
         """
         Adds an item to the inventory.
@@ -77,17 +86,28 @@ class Inventory:
         except Exception as e:
             print(f"An error occurred: {e}")
 
-    def update_item(self, item_name, quantity, value):
+    def update_item(self, item_name, quantity=None, value=None):
         """
         Updates the details of an item in the inventory.
         """
         try:
-            query = "UPDATE inventory SET quantity = ?, value = ? WHERE item_name = ?"
-            values = (quantity, value, item_name)
+            if quantity is not None and value is not None:
+                query = "UPDATE inventory SET quantity = ?, value = ? WHERE item_name = ?"
+                values = (quantity, value, item_name)
+            elif quantity is not None:
+                query = "UPDATE inventory SET quantity = ? WHERE item_name = ?"
+                values = (quantity, item_name)
+            elif value is not None:
+                query = "UPDATE inventory SET value = ? WHERE item_name = ?"
+                values = (value, item_name)
+            else:
+                return
+
             self.cursor.execute(query, values)
             self.db.commit()
         except Exception as e:
             print(f"An error occurred: {e}")
+            input("Press any key to continue...")
 
     def view_inventory(self):
         """
